@@ -3,6 +3,8 @@
 The goal of this file is to train a Logistic Regression Classifier for the 
 MNIST Dataset
 
+This code has been written to work in Python 2
+
 @author: Sharjeel Abid Butt
 """
 
@@ -60,6 +62,7 @@ def logisticRegression(theta, X, y, Lambda):
     f = - np.sum(y * np.log(y_hat) + (1.0 - y) * np.log(1.0 - y_hat)) / np.shape(X)[0]
     g = np.dot(X.T, y_hat - y)
     
+    # This block takes care of Regularization
     if Lambda != 0:
         f     += Lambda / 2 * np.sum(theta[1:] ** 2) / np.shape(X)[0]
         g[1:] += Lambda * theta[1:]
