@@ -3,6 +3,8 @@
 The goal of this file is to train a Logistic Regression Classifier for the 
 MNIST Dataset
 
+This code has been written to work in Python 3
+
 @author: Sharjeel Abid Butt
 """
 
