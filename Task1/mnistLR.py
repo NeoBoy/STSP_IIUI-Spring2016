@@ -6,6 +6,10 @@ MNIST Dataset
 This code has been written to work in Python 2
 
 @author: Sharjeel Abid Butt
+
+@References
+
+1.http://ufldl.stanford.edu/tutorial/supervised/LogisticRegression/ 
 """
 
 import mnist_load as mload
@@ -71,8 +75,8 @@ def logisticRegression(theta, X, y, Lambda):
 
 tic()
 
-class1 = 1;
-class0 = 0;
+class1 = 1
+class0 = 0
 
 y, X     = dataExtraction('train', class1, class0)
 theta    = np.random.rand(np.shape(X)[1] + 1, 1) * 1e-2
