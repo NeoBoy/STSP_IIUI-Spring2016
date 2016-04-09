@@ -11,7 +11,6 @@ The goal of this file is to design a class for Neural Networks
 
 """
 
-import mnist_load as mload
 import copy
 
 import numpy as np
@@ -33,25 +32,6 @@ def toc():
         print "Elapsed time is " + str(time.time() - startTime_for_tictoc) + " seconds."
     else:
         print "Toc: start time not set"
-
-def dataExtraction(data = 'train', class1 = 1, class0 = 0):
-    
-    [data, labels] = mload.load(data)
-    y1 = np.extract(labels == class1, labels)
-    X1 = data[labels == class1, :, :]
-    
-    y0 = np.extract(labels == class0, labels)
-    X0 = data[labels == class0, :, :]
-
-    y = np.concatenate((y1, y0), axis = 0)
-    X = np.concatenate((X1, X0), axis = 0)
-    
-    X = np.reshape(X, (np.shape(X)[0], np.shape(X)[1] * np.shape(X)[2]))
-    X = (X - np.mean(X, axis = 0)) / (1 + np.std(X, axis = 0)) # Data Normalization
-    y[y == class1] = 1
-    y[y == class0] = 0
-    y = np.reshape(y, (np.shape(X)[0], 1))
-    return y, X
 
 
 
