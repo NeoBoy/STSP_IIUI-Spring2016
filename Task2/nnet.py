@@ -156,7 +156,7 @@ class nnet(object):
         return nodes
                         
     
-    def backward_pass(self, delta, nodes, X, y, grad, Lambda):
+    def backward_pass(self, delta, nodes, X, y, grad, Lambda, quadLoss):
         """        
         Does the Backpass stage of Backpropagation        
         """
@@ -164,8 +164,9 @@ class nnet(object):
         m = np.shape(y)[0]
         
         if self.a_Func == 'sigmoid':
-            delta[-1] = (nodes[-1] - y) 
-#            * self.sigmoid(nodes[-1], True)
+            delta[-1] = (nodes[-1] - y)
+            if quadLoss:
+                delta[-1] *= self.sigmoid(nodes[-1], True)
             for l in range(self.n_L - 1, -1, -1):
                 delta[l] = np.dot(delta[l + 1], self.Theta[l + 1][1:].T) \
                            * self.sigmoid(nodes[l], True)
@@ -185,7 +186,7 @@ class nnet(object):
                 
     
     def trainNNET(self, data, labels, stoppingCriteria = 1e-3, LearningRate = 1e-1, 
-                  Lambda = 0, noOfIterations = 1000, moreDetail = False):
+                  Lambda = 0, noOfIterations = 1000, quadLoss = False, moreDetail = False):
         """
         Does the training of the Neural Network
         """
@@ -212,9 +213,12 @@ class nnet(object):
             nodes = self.forward_pass(nodes, data, labels)
             
             labels_hat = nodes[-1]
-            error = - np.sum(labels * np.log(labels_hat) + \
-                      (1.0 - labels) * np.log(1.0 - labels_hat)) * 1.0 / m
-#            error = np.sum((labels_hat - labels) ** 2) / m           
+            
+            if quadLoss:
+                error = np.sum((labels_hat - labels) ** 2) / m
+            else:
+                error = - np.sum(labels * np.log(labels_hat) + \
+                       (1.0 - labels) * np.log(1.0 - labels_hat)) * 1.0 / m           
             if Lambda != 0:
                 for l in range(self.n_L + 1):
                     error += Lambda / 2 * np.sum(self.Theta[l][1:] ** 2) / m
@@ -227,7 +231,7 @@ class nnet(object):
                 break
             else:
                 grad, delta = self.backward_pass(delta, nodes, data, \
-                                                 labels, grad, Lambda)
+                                                 labels, grad, Lambda, quadLoss)
                 
                 for l in range(self.n_L + 1):
                     self.Theta[l] -= LearningRate / m * grad[l]
@@ -254,18 +258,18 @@ class nnet(object):
 
 
 # Main Code starts here
-# inData  = np.array([[0.1, 0.5]])
-# outData = np.array([[0.5, 0.1]])
-
-# Q2 = nnet(noOfInputs = 2, noOfLayers = 1, nodesInEachLayer = [2], noOfOutputs = 2)
-
-# Q2.setTheta(allSet = True)
-# original_theta = Q2.getTheta()
-
-# loss, nodes, grad, delta = Q2.trainNNET(inData, outData, LearningRate = 0.1, \
-                                        # noOfIterations = 1, moreDetail = True)
-
-# updated_Theta = Q2.getTheta()
+#inData  = np.array([[0.1, 0.5]])
+#outData = np.array([[0.5, 0.1]])
+#
+#Q2 = nnet(noOfInputs = 2, noOfLayers = 1, nodesInEachLayer = [2], noOfOutputs = 2)
+#
+#Q2.setTheta(allSet = True)
+#original_theta = Q2.getTheta()
+#
+#loss, nodes, grad, delta = Q2.trainNNET(inData, outData, LearningRate = 0.1, \
+#                                        noOfIterations = 1, moreDetail = True)
+#
+#updated_Theta = Q2.getTheta()
 
 class1 = 1
 class0 = 0
@@ -275,15 +279,16 @@ labelsTrain, dataTrain = dataExtraction('train', class1, class0)
 noOfIter     = 5000
 learningRate = 1e-1
 stopVal      = 1e-3
-Lambda       = 0.1
+Lambda       = 1e-1
 pR           = [-1, 1]
 
 mnistClassifier = nnet(noOfInputs = 784, noOfLayers = 2, nodesInEachLayer = [50, 50], \
-                      noOfOutputs = 1, parametersRange = pR)
+                       noOfOutputs = 1, parametersRange = pR)
 
 tic()
-#loss = mnistClassifier.trainNNET(dataTrain, labelsTrain, noOfIterations = 100, \
-#                                 LearningRate = learningRate, Lambda = Lambda)
+loss = mnistClassifier.trainNNET(dataTrain, labelsTrain, noOfIterations = 100, \
+                                 LearningRate = learningRate, Lambda = Lambda, \
+                                 quadLoss = False)
 
 toc()
 
