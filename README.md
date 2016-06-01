@@ -5,3 +5,5 @@ Assignments for Special Topics in Signal Processing Course @ International Islam
 
 [Task 2] (https://github.com/NeoBoy/STSP_IIUI-Spring2016/tree/master/Task2): Implementing a Binary Classifier for MNIST Dataset using Neural Networks
 
+[Term Project] (https://github.com/NeoBoy/STSP_IIUI-Spring2016/tree/master/TermProject): Implementing a Convolutional Deep Neural Network for Source Separation
+
