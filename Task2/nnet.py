@@ -215,7 +215,7 @@ class nnet(object):
             labels_hat = nodes[-1]
             
             if quadLoss:
-                error = np.sum((labels_hat - labels) ** 2) / m
+                error = np.sum((labels_hat - labels) ** 2) / (2.0 * m)
             else:
                 error = - np.sum(labels * np.log(labels_hat) + \
                        (1.0 - labels) * np.log(1.0 - labels_hat)) * 1.0 / m           
@@ -258,52 +258,52 @@ class nnet(object):
 
 
 # Main Code starts here
-#inData  = np.array([[0.1, 0.5]])
-#outData = np.array([[0.5, 0.1]])
+inData  = np.array([[0.1, 0.5]])
+outData = np.array([[0.5, 0.1]])
+
+Q2 = nnet(noOfInputs = 2, noOfLayers = 1, nodesInEachLayer = [2], noOfOutputs = 2)
+
+Q2.setTheta(allSet = True)
+original_theta = Q2.getTheta()
+
+loss, nodes, grad, delta = Q2.trainNNET(inData, outData, LearningRate = 0.1, \
+                                        noOfIterations = 1, moreDetail = True)
+
+updated_Theta = Q2.getTheta()
+
+#class1 = 1
+#class0 = 0
 #
-#Q2 = nnet(noOfInputs = 2, noOfLayers = 1, nodesInEachLayer = [2], noOfOutputs = 2)
+#labelsTrain, dataTrain = dataExtraction('train', class1, class0)
 #
-#Q2.setTheta(allSet = True)
-#original_theta = Q2.getTheta()
+#noOfIter     = 5000
+#learningRate = 1e-1
+#stopVal      = 1e-3
+#Lambda       = 1e-1
+#pR           = [-1, 1]
 #
-#loss, nodes, grad, delta = Q2.trainNNET(inData, outData, LearningRate = 0.1, \
-#                                        noOfIterations = 1, moreDetail = True)
+#mnistClassifier = nnet(noOfInputs = 784, noOfLayers = 2, nodesInEachLayer = [50, 50], \
+#                       noOfOutputs = 1, parametersRange = pR)
 #
-#updated_Theta = Q2.getTheta()
-
-class1 = 1
-class0 = 0
-
-labelsTrain, dataTrain = dataExtraction('train', class1, class0)
-
-noOfIter     = 5000
-learningRate = 1e-1
-stopVal      = 1e-3
-Lambda       = 1e-1
-pR           = [-1, 1]
-
-mnistClassifier = nnet(noOfInputs = 784, noOfLayers = 2, nodesInEachLayer = [50, 50], \
-                       noOfOutputs = 1, parametersRange = pR)
-
-tic()
-loss = mnistClassifier.trainNNET(dataTrain, labelsTrain, noOfIterations = 100, \
-                                 LearningRate = learningRate, Lambda = Lambda, \
-                                 quadLoss = False)
-
-toc()
-
-plt.figure()
-plt.plot(loss)
-plt.show()
-
-print "\n\n\n"
-
-labels_hatTrain = mnistClassifier.predictNNET(dataTrain, labelsTrain)
-Train_Accuracy  = np.sum(labels_hatTrain == labelsTrain) * 100.0 / np.shape(labelsTrain)[0]
-print "Training Accuracy = " + str(Train_Accuracy) + "%"
-
-labelsTest, dataTest = dataExtraction('test', class1, class0)
-
-labels_hatTest = mnistClassifier.predictNNET(dataTest, labelsTest)
-Test_Accuracy  = np.sum(labels_hatTest == labelsTest) * 100.0 / np.shape(labelsTest)[0]
-print "Test Accuracy = " + str(Test_Accuracy) + "%"
+#tic()
+#loss = mnistClassifier.trainNNET(dataTrain, labelsTrain, noOfIterations = 100, \
+#                                 LearningRate = learningRate, Lambda = Lambda, \
+#                                 quadLoss = False)
+#
+#toc()
+#
+#plt.figure()
+#plt.plot(loss)
+#plt.show()
+#
+#print "\n\n\n"
+#
+#labels_hatTrain = mnistClassifier.predictNNET(dataTrain, labelsTrain)
+#Train_Accuracy  = np.sum(labels_hatTrain == labelsTrain) * 100.0 / np.shape(labelsTrain)[0]
+#print "Training Accuracy = " + str(Train_Accuracy) + "%"
+#
+#labelsTest, dataTest = dataExtraction('test', class1, class0)
+#
+#labels_hatTest = mnistClassifier.predictNNET(dataTest, labelsTest)
+#Test_Accuracy  = np.sum(labels_hatTest == labelsTest) * 100.0 / np.shape(labelsTest)[0]
+#print "Test Accuracy = " + str(Test_Accuracy) + "%"
